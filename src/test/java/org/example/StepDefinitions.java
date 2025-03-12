@@ -34,7 +34,7 @@ public class StepDefinitions {
 
     @Given("a client user wants to submit an order")
     public void a_client_user_wants_to_submit_an_order() {
-        // O utilizador quer submeter um pedido.
+
     }
 
     @When("they send a POST request to {string} with {string}")

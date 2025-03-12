@@ -4,10 +4,10 @@ Feature: Order Management
   Scenario Outline: Submitting an order
     Given a client user wants to submit an order
     When they send a POST request to "order/order_id/submit" with "<order_id>"
-    Then the system should respond to order submission with "<response>"
+    Then the system should respond to order submission with "<responses>"
 
     Examples:
-      | order_id | response       |
+      | order_id | responses       |
       | 123      | 201 Created    |
       | abc      | 400 Bad Request |
 
