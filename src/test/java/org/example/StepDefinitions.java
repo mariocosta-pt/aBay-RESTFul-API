@@ -37,6 +37,14 @@ public class StepDefinitions {
 
     }
 
+    @When("they send a POST request to {string} with {string}")
+    public void they_send_a_post_request_to_with(String endpoint, String orderId) {
+        if (!endpoint.equals("order/order_id/submit")) {
+            actualResponse = "404 Not Found";
+        } else {
+            actualResponse = OrderService.submitOrder(orderId);
+        }
+    }
 
 
     @Then("the system should respond to order submission with {string}")

@@ -26,6 +26,12 @@ public class OrderStepDefinitions {
     }
 
 
+    @Given("existe um utilizador com username {string}")
+    public void existe_um_utilizador_com_username(String username) {
+
+        this.username = username;
+
+    }
 
     @When("cliente utilizador faz um POST para order\\/new")
     public void cliente_utilizador_faz_um_post_para_order_new() {
@@ -51,7 +57,10 @@ public class OrderStepDefinitions {
     }
 
 
-
+    @Then("a resposta deve ser {int} {string}")
+    public void a_resposta_deve_ser_codigo_e_mensagem(Integer expectedCode, String statusMessage) {
+        assertThat(responseStatus).isEqualTo(expectedCode);
+    }
     @Then("a resposta deve ser {int} OK")
     public void a_resposta_deve_ser_ok(Integer expectedCode) {
         assertThat(responseStatus).isEqualTo(expectedCode);
