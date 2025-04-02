@@ -65,12 +65,11 @@ public class UserManagementSteps {
     }
 
     // ---------- Step Definitions ----------
-
-    @Given("existe um administrador com username {string}")
-    public void existe_um_administrador_com_username(String username) {
-        userStore.put(username, "admin");
+    @Given("existe um utilizador no sistema de gestão com username {string}")
+    public void existe_um_utilizador_no_sistema_de_gestao_com_username(String username) {
         this.username = username;
     }
+
 
     @Given("existe um utilizador com username {string}")
     public void existe_um_utilizador_com_username(String username) {
