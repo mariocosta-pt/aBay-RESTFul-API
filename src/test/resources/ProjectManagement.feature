@@ -1,4 +1,4 @@
-Feature: Gestão de Utilizadores
+Feature: Project Management Features
 
   Scenario: Cliente administrador faz um POST para admin/update
     Given que o cliente administrador está autenticado
