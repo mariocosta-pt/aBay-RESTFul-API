@@ -1,7 +1,7 @@
 package org.example;
 
-import io.cucumber.java.pt.Quando;
-import io.cucumber.java.pt.Entao;
+import io.cucumber.java.en.When;
+import io.cucumber.java.en.Then;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,43 +22,43 @@ public class UserManagementSteps extends StepDefinition {
 
     private ResultActions response;
 
-    @Quando("o administrador faz um POST para {string}")
+    @When("o administrador faz um POST para {string}")
     public void oAdministradorFazUmPOSTPara(String endpoint) throws Exception {
         response = mvc.perform(post("/" + endpoint)
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-    @Quando("o administrador faz um PUT para {string}")
+    @When("o administrador faz um PUT para {string}")
     public void oAdministradorFazUmPUTPara(String endpoint) throws Exception {
         response = mvc.perform(put("/" + endpoint)
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-    @Quando("o cliente faz um POST para {string}")
+    @When("o cliente faz um POST para {string}")
     public void oClienteFazUmPOSTPara(String endpoint) throws Exception {
         response = mvc.perform(post("/" + endpoint)
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-    @Quando("o cliente faz um PUT para {string}")
+    @When("o cliente faz um PUT para {string}")
     public void oClienteFazUmPUTPara(String endpoint) throws Exception {
         response = mvc.perform(put("/" + endpoint)
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-    @Quando("o administrador faz um DELETE para {string}")
+    @When("o administrador faz um DELETE para {string}")
     public void oAdministradorFazUmDELETEPara(String endpoint) throws Exception {
         response = mvc.perform(delete("/" + endpoint)
                 .header("Role", "admin"));
     }
 
-    @Quando("o cliente faz um DELETE para {string}")
+    @When("o cliente faz um DELETE para {string}")
     public void oClienteFazUmDELETEPara(String endpoint) throws Exception {
         response = mvc.perform(delete("/" + endpoint)
                 .header("Role", "cliente"));
     }
 
-    @Entao("a resposta deve ser {int} {word}")
+    @Then("a resposta deve ser {int} {word}")
     public void aRespostaDeveSer(int statusCode, String statusText) throws Exception {
         response.andExpect(status().is(statusCode));
     }
