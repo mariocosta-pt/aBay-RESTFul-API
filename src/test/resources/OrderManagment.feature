@@ -1,34 +1,33 @@
 Feature: Order Management
   This feature should enable the management of orders, including submitting, listing by status, and handling invalid inputs.
 
-  Scenario: A client makes a call to GET placeOrder
-    When the client calls /placeOrder
+  Scenario: A client makes a call to GET /order/new
+    When the client calls /order/new
     Then the client receives status code of 201
     And the UUID is valid
 
 
-  Scenario Outline: Client user lists orders by status
-    Given a client user wants to list orders by status
-    When the client sends a GET request to the order list with a status of "<status>"
-    Then the system should return the list response "<response>"
+  Scenario Outline: A client makes a call to POST to /order/search
+    When the client calls /order/search
+    And the client sends "<status>"
+    Then the client receives status code of "<code>"
+    And the List of Orders
 
     Examples:
-      | status    | response         |
-      | PENDING   | list of orders   |
-      | COMPLETED | list of orders   |
-      | CANCELLED | empty list       |
-      | INVALID   | 400 Bad Request  |
+      | status    | code |
+      | PENDING   | 200  |
+      | COMPLETED | 200  |
+      | CANCELLED | 200  |
+      | INVALID   | 400  |
 
-      # Cenário para criar um novo pedido, que devolve um id para representar o pedido
-  Scenario: cliente utilizador faz um POST para order/new
-    Given existe um utilizador com username "user123"
-    When cliente utilizador faz um POST para order/new
-    Then o pedido deve ser criado com um id
+  Scenario Outline: A client makes a call to POST /order/add
+    Given the client calls /order/add
+    And the client is "<user>"
+    And and the orderid exists
+    Then the client receives status "<code>"
 
-  # Cenário para adicionar itens a um pedido existente
-  Scenario: cliente utilizador faz um POST para order/id/add
-    Given existe um utilizador com username "user123"
-    And um pedido com id 1001 foi criado
-    When cliente utilizador faz um POST para order/1001/add
-    Then a resposta deve ser 200 "OK"
+    Examples:
+      | user   | code |
+      | valid    | 200  |
+      | notvalid | 400  |
 
