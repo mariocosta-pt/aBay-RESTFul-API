@@ -89,4 +89,12 @@ public class ProductManagementSteps extends StepDefinition {
     @Then("the system should return {string}")
     public void the_system_should_return(String expectedResponse) {
     }
+
+
+
+    @When("they send a POST request to {string} with {string}")
+    public void they_send_a_post_request_to_with(String string, String string2) {
+        // Write code here that turns the phrase above into concrete actions
+
+    }
 }

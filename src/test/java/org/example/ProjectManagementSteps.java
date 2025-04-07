@@ -57,7 +57,30 @@ public class ProjectManagementSteps extends StepDefinition{
         // Write code here that turns the phrase above into concrete actions
     }
 
+    @Given("que o cliente utilizador está autenticado")
+    public void que_o_cliente_utilizador_está_autenticado() {
+        // Write code here that turns the phrase above into concrete actions
+    }
 
+    @When("ele faz um DELETE para {string} com o ID de um utilizador")
+    public void ele_faz_um_delete_para_com_o_id_de_um_utilizador(String string) {
+        // Write code here that turns the phrase above into concrete actions
+    }
+
+    @Then("o utilizador deve ser removido com sucesso")
+    public void o_utilizador_deve_ser_removido_com_sucesso() {
+        // Write code here that turns the phrase above into concrete actions
+    }
+
+    @When("ele faz um DELETE para {string} com o seu próprio ID")
+    public void ele_faz_um_delete_para_com_o_seu_próprio_id(String string) {
+        // Write code here that turns the phrase above into concrete actions
+    }
+
+    @Then("a conta do utilizador deve ser removida com sucesso")
+    public void a_conta_do_utilizador_deve_ser_removida_com_sucesso() {
+        // Write code here that turns the phrase above into concrete actions
+    }
 
 
 
