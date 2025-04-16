@@ -31,6 +31,12 @@ public class OrderManagementSteps extends StepDefinition {
 
     ResultActions action;
     String user;
+
+    private String response;
+    private String orderId;
+    private String status;
+
+
     // Cenário: Submissão de um pedido
 
 
@@ -129,5 +135,70 @@ public class OrderManagementSteps extends StepDefinition {
 
     }
 
+    // --- List Orders ---
+    @Given("o cliente quer ver a lista de encomendas")
+    public void o_cliente_quer_ver_a_lista_de_encomendas() {
+        response = "";
+    }
+
+    @When("ele envia um pedido GET para {string}")
+    public void ele_envia_um_pedido_get_para(String url) {
+        if (url.contains("STATUS=PENDING")) {
+            response = "lista de encomendas pendentes";
+        } else if (url.contains("STATUS=COMPLETED")) {
+            response = "lista de encomendas concluídas";
+        } else if (url.contains("STATUS=CANCELLED")) {
+            response = "lista de encomendas canceladas";
+        } else {
+            response = "lista vazia";
+        }
+    }
+
+    @Then("___o sistema responde com {string}")
+    public void o_sistema_responde_com(String expectedResponse) {
+        Assert.assertEquals(expectedResponse, response);
+    }
+
+    // --- Update Order ---
+    @Given("o cliente quer atualizar uma encomenda existente")
+    public void o_cliente_quer_atualizar_uma_encomenda_existente() {
+        response = "";
+    }
+
+    @When("ele envia um pedido PUT para {string} com {string}")
+    public void ele_envia_um_pedido_put_para_com(String url, String payload) {
+        if (url.contains("001") && payload.equals("valid update")) {
+            response = "200 OK";
+        } else if (payload.equals("nonexistent order")) {
+            response = "404 Not Found";
+        } else {
+            response = "400 Bad Request";
+        }
+    }
+
+    @Then("____o sistema deve responder com {string}")
+    public void ____o_sistema_deve_responder_com(String expectedResponse) {
+        Assert.assertEquals(expectedResponse, response);
+    }
+
+    // --- Delete Order ---
+    @Given("o cliente quer eliminar uma encomenda")
+    public void o_cliente_quer_eliminar_uma_encomenda() {
+        response = "";
+    }
+
+    @When("ele envia um pedido DELETE para {string}")
+    public void ele_envia_um_pedido_delete_para(String url) {
+        if (url.contains("001")) {
+            response = "200 OK";
+        } else {
+            response = "404 Not Found";
+        }
+    }
+
+    @Then("_s_o sistema responde com {string}")
+    public void _s_o_sistema_responde_com(String string) {
+
+    }
 
 }

@@ -4,9 +4,9 @@ Feature: Product Management
 
 
  Scenario Outline: Creating a new product
-   Given a client user wants to create a product
-   When they send a POST request to "product/create" with "<product_data>"
-   Then the system should respond to product creation with "<response>"
+   Given cliente utilizador faz um POST para product/create
+   When eles enviam um pedido POST para "product/create" com "<product_data>"
+   Then o sistema deve responder a criação do produto com "<response>"
 
    Examples:
      | product_data                          | response      |
@@ -15,9 +15,9 @@ Feature: Product Management
      | invalid category reference            | 404 Not Found  |
 
  Scenario Outline: Removing a product
-   Given a client user wants to remove a product
-   When they send a DELETE request to "product/remove" with "<product_id>"
-   Then the system should respond to product deletion with "<response>"
+   Given um cliente utilizador faz um DELETE para product/remove
+   When eles enviam um pedido DELETE para "product/remove" com "<product_id>"
+   Then o sistema deve responder ao pedido de apagar produto com "<response>"
 
    Examples:
      | product_id       | response      |
@@ -25,9 +25,9 @@ Feature: Product Management
      | non-existent ID  | 404 Not Found |
 
  Scenario Outline: Updating a product
-    Given a client user wants to update a product
-    When they send an UPDATE request to "product/update" with "<update_data>"
-    Then the system should respond to the product update with "<response>"
+    Given cliente utilizador faz um UPDATE para product/update
+    When eles enviam um pedido UPDATE para "product/update" com "<update_data>"
+    Then o sistema deve responder ao pedido de atualizar o produto com "<response>"
 
     Examples:
       | update_data                      | response      |
@@ -36,12 +36,28 @@ Feature: Product Management
       | missing required fields          | 400 Bad Request |
 
  Scenario Outline: Listing product categories
-    Given a client user wants to view all categories
-    When they send a GET request to "product/category/list"
-    And the "product/category/list" is "<state>"
-    Then the system should return "<response>"
+    Given um cliente quer ver todas as categorias
+    When eles fazem um pedido GET para "product/category/list"
+    And o "product/category/list" é "<state>"
+    Then o sistema deve responder com "<response>"
 
     Examples:
       | state       | response           |
       | populated  | list of categories |
       | empty      | empty list         |
+
+  Scenario Outline: cliente faz um POST para product/search com filtro único ou combinados
+    Given cliente utilizador faz um POST para product/search
+    When ele envia os filtros:
+      | category | <category> |
+      | name     | <name>     |
+      | price    | <price>    |
+      | active   | <active>   |
+    Then o sistema deve retornar os produtos filtrados com resposta "<response>"
+
+    Examples:
+      | category    | name       | price | active | response               |
+      | Electronics |            |       | true   | produtos ativos da categoria Electronics |
+      |             | Headphones |       |        | produtos com nome Headphones             |
+      | Books       | Livro A    |       | false  | produtos inativos da categoria Books com nome Livro A |
+      |             |            |       |        | todos os produtos                         |
