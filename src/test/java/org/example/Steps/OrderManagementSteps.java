@@ -1,4 +1,4 @@
-package org.example;
+package org.example.Steps;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
@@ -14,15 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.junit.Assert;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.io.UnsupportedEncodingException;
-import java.util.LinkedList;
 
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class OrderManagementSteps extends StepDefinition {
 
     @Autowired

@@ -1,8 +1,9 @@
 Feature: User Management Feature
 
-  Scenario: O administrador faz um POST para admin/update
-    When o administrador faz um POST para "admin/update"
-    Then a resposta deve ser 200 OK
+  Scenario: O administrador faz um PUT para admin/update
+  Quando o administrador faz um PUT para "admin/update"
+  Então a resposta deve ser 200 OK com a mensagem "Utilizador atualizado com sucesso."
+
 
   Scenario: O cliente faz um POST para user/create
     When o cliente faz um POST para "user/create"

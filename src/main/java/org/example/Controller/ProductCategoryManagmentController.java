@@ -1,10 +1,12 @@
-package org.example;
+package org.example.Controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+
+import static org.example.Controller.ProductManagmentController.categories;
 
 @RestController
 public class ProductCategoryManagmentController {
@@ -73,4 +75,9 @@ public class ProductCategoryManagmentController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+    @GetMapping("/product/category/list")
+    public ResponseEntity<?> listCategories() {
+        return ResponseEntity.ok(categories);
+    }
+
 }

@@ -1,18 +1,32 @@
 package org.example.model;
 
-import java.util.LinkedList;
-import java.util.UUID;
+import jakarta.persistence.*;
 
+import java.util.*;
+
+@Entity
+@Table(name = "orders")
 public class Order {
+
+    @Id
     private String id;
-    private LinkedList<Product> list;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "order_products",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> list = new ArrayList<>();
+
+    private String status;
 
     public Order() {
         this.id = UUID.randomUUID().toString();
-        this.list = new LinkedList<Product>();
+        this.status = "PENDING";
     }
 
-    public String getId(){
+    public String getId() {
         return this.id;
     }
 
@@ -20,7 +34,7 @@ public class Order {
         this.id = id;
     }
 
-    public LinkedList<Product> getList(){
+    public List<Product> getList(){
         return this.list;
     }
 
@@ -30,6 +44,14 @@ public class Order {
 
     public void removeProduct(Product product){
         this.list.remove(product);
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String parseProductsList() {

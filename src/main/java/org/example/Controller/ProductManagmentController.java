@@ -1,17 +1,18 @@
-package org.example;
+package org.example.Controller;
 
 import org.example.model.Product;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @RestController
 public class ProductManagmentController {
 
-    private static Set<String> productIds = new HashSet<>(Arrays.asList("p1", "p2", "p3"));
-    private static List<String> categories = Arrays.asList("Electronics", "Books", "Clothing");
+    public static Set<String> productIds = new HashSet<>(Arrays.asList("p1", "p2", "p3"));
+    static List<String> categories = Arrays.asList("Electronics", "Books", "Clothing");
 
     // 1. Criar produto
     @PostMapping("/product/create")
@@ -68,13 +69,13 @@ public class ProductManagmentController {
         String active = filters.getOrDefault("active", "").trim();
         String price = filters.getOrDefault("price", "").trim();
 
-        // Lista simulada de produtos
         List<Product> allProducts = Arrays.asList(
-                new Product("Headphones", "Fones de ouvido"),
-                new Product("Livro A", "Um ótimo livro"),
-                new Product("TV", "Smart TV 4K"),
-                new Product("Cadeira", "Confortável para escritório")
+                new Product("Headphones", "Fones de ouvido", new BigDecimal("49.99"), "true", "Eletrônicos"),
+                new Product("Livro A", "Um ótimo livro", new BigDecimal("14.90"), "true", "Livros"),
+                new Product("TV", "Smart TV 4K", new BigDecimal("899.00"), "true", "Eletrônicos"),
+                new Product("Cadeira", "Confortável para escritório", new BigDecimal("120.00"), "true", "Móveis")
         );
+
 
         // Simula filtro
         List<Product> filtered = new ArrayList<>();
@@ -99,5 +100,17 @@ public class ProductManagmentController {
 
         return ResponseEntity.ok(filtered);
     }
+    // 5. Obter produto por ID
+    @GetMapping("/product/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable("id") String id) {
+        if (productIds.contains(id)) {
+            return ResponseEntity.ok("Produto existente");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado");
+        }
+    }
+
+
+
 
 }

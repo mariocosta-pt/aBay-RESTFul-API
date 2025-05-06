@@ -1,12 +1,14 @@
-package org.example;
+package org.example.Steps;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.context.ActiveProfiles;
 
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class ProductCategoryManagementSteps extends StepDefinition {
 
     private String response;
