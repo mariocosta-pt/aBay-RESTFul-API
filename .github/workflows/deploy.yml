@@ -17,15 +17,8 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Teste Listar conteúdos da pasta
-        run: ls -l
-
       - name: Make scripts executable
-        run: |
-          chmod +x ci/01-build.sh
-          chmod +x ci/02-test.sh
-          chmod +x ci/03-build-image.sh
-          chmod +x ci/04-push-image.sh
+        run: chmod +x ci/*.sh
 
       - name: Build app
         run: ./ci/01-build.sh
