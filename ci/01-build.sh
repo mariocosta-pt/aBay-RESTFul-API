@@ -2,4 +2,4 @@
 
 set -e
 echo "🔧 Building project..."
-./mvnw clean package -DskipTests
+mvn clean package -DskipTests
