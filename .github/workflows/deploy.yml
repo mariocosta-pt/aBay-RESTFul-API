@@ -18,7 +18,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Make scripts executable
-        run: chmod +x ./ci/*.sh
+        run: |
+          chmod +x ci/01-build.sh
+          chmod +x ci/02-test.sh
+          chmod +x ci/03-build-image.sh
+          chmod +x ci/04-push-image.sh
 
       - name: Build app
         run: ./ci/01-build.sh
