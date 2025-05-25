@@ -1,44 +1,101 @@
 # aBay-RESTFul-API
-A RESTFul API for an online market platform
 
+A RESTful API for an online market platform.
 
-## Running with Docker Compose
+---
 
-This project uses Docker Compose to simplify the setup and execution of the service and its dependencies (like a database).
+## 🐳 Running with Docker Compose
 
-### Prerequisites
+This project uses Docker Compose to simplify the setup and execution of the API and its PostgreSQL database.
 
-*   [Docker](https://docs.docker.com/get-docker/) installed on your system.
-*   [Docker Compose](https://docs.docker.com/compose/install/) installed (Docker Desktop for Windows and Mac includes Docker Compose).
-*   A `Dockerfile` in the root of this project that defines how to build and run the `aBay-RESTFul-API` service.
+---
 
-### `docker-compose.yml` File Structure
+## 📦 Prerequisites
 
-The `docker-compose.yml` file at the root of this project orchestrates the different components of our application. It defines the following:
+- [Docker](https://docs.docker.com/get-docker/) installed.
+- [Docker Compose](https://docs.docker.com/compose/install/) (included in Docker Desktop).
 
-*   **Services**:
-    *   `abay-api`:
-        *   **Description**: This is the main application service for the aBay RESTFul API.
-        *   **Build**: It's built using the `Dockerfile` located in the project's root directory.
-        *   **Ports**: Exposes port `8080` on your host machine, mapped to port `8080` in the container (e.g., accessible via `http://localhost:8080`).
-        *   **Environment**: Configured with environment variables for database connection (e.g., `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`) and potentially other application settings. **You must review and adjust these variables in `docker-compose.yml` to match your application's specific requirements.**
-        *   **Dependencies**: Depends on the `db` service, ensuring the database is ready before the API starts.
-        *   **Network**: Connected to the `abay-network`.
-    *   `db`:
-        *   **Description**: This service runs a PostgreSQL database instance.
-        *   **Image**: Uses the official `postgres:15` image from Docker Hub.
-        *   **Ports**: Exposes port `5433` on your host machine, mapped to the default PostgreSQL port `5432` in the container. This allows direct database access from your host (e.g., using a SQL client) without conflicting with a local PostgreSQL instance.
-        *   **Environment**: Sets up the database with a default user (`abayuser`), password (`abaypassword`), and database name (`abaydb`). These credentials are used by the `abay-api` service.
-        *   **Volumes**: Uses a named volume `abay_db_data` to persist database data, so your data isn't lost when containers are stopped or removed.
-        *   **Network**: Connected to the `abay-network`.
-        *   **Healthcheck**: Includes a healthcheck to ensure the database is ready to accept connections.
+---
 
-*   **Volumes**:
-    *   `abay_db_data`: A named Docker volume used by the `db` service to persist PostgreSQL data across container restarts.
+## 🧱 Project Structure
 
-*   **Networks**:
-    *   `abay-network`: A custom bridge network that allows the `abay-api` and `db` services to discover and communicate with each other using their service names (e.g., `abay-api` can connect to `db` at `db:5432`).
+### 🔧 Dockerfile
 
-### Instructions to Run the Service
+- Uses `eclipse-temurin:17-jdk-alpine` as the base image.
+- Builds and runs a Spring Boot `.jar` with the `prod` profile.
+- Exposes port `8080`.
 
-1.  **Clone the Repository** (if you haven't already):
+### 🗂 docker-compose.yml
+
+Defines the following services:
+
+#### ✅ app (aBay RESTFul API)
+
+- **Build**: From the `Dockerfile` in the project root.
+- **Image**: `marioatccosta/abay-restful-api:latest`.
+- **Ports**: Maps `8080:8080` (accessible at `http://localhost:8080`).
+- **Environment**:
+    - `DB_USERNAME`: database user.
+    - `DB_PASSWORD`: database password.
+- **Depends on**: `postgres` service.
+
+#### 🐘 postgres (database)
+
+- **Image**: `postgres:15`.
+- **Ports**: `5432:5432`.
+- **Environment**:
+    - `POSTGRES_DB=ES`
+    - `POSTGRES_USER=postgres`
+    - `POSTGRES_PASSWORD=pires`
+- **Volume**: Persists data in `pgdata`.
+
+#### 💾 Volumes
+
+```yaml
+volumes:
+  pgdata:
+```
+
+---
+
+## ▶️ How to Run
+
+1. **Clone the repository**:
+
+```bash
+git clone https://github.com/your-username/aBay-RESTFul-API.git
+cd aBay-RESTFul-API
+```
+
+2. **Build the .jar** (outside the container):
+
+```bash
+./mvnw clean package -DskipTests
+```
+
+3. **Start the application with Docker Compose**:
+
+```bash
+docker-compose up --build
+```
+
+4. **Access the API at**: [http://localhost:8080](http://localhost:8080)
+
+---
+
+## 🧪 Testing
+
+Run tests with:
+
+```bash
+./mvnw test
+```
+
+---
+
+## 🔐 Security Notes
+
+- Environment variables like `DB_USERNAME` and `DB_PASSWORD` can be stored in a `.env` file (excluded from version control).
+- Avoid hardcoding sensitive credentials in `docker-compose.yml` for production.
+
+---
