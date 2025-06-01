@@ -1,105 +1,136 @@
 # aBay-RESTFul-API
 
-A RESTful API for an online market platform.
+A RESTful API for an online market platform, developed com Spring Boot e PostgreSQL.
 
 ![Builder](https://github.com/mariocosta-pt/aBay-RESTFul-API/actions/workflows/builder.yml/badge.svg)
-
 ![Deployer](https://github.com/mariocosta-pt/aBay-RESTFul-API/actions/workflows/deploy.yml/badge.svg)
 
 ---
 
-## 🐳 Running with Docker Compose
+## 🎯 Project Objective
 
-This project uses Docker Compose to simplify the setup and execution of the API and its PostgreSQL database.
+This project implements a CI/CD (Continuous Integration and Continuous Delivery) pipeline using **GitHub Actions** to automatically build, test, package, publish, and deploy a RESTful service hosted in a public Docker Registry.
 
----
+Whenever code is pushed to the `main` branch, the following steps are executed automatically:
 
-## 📦 Prerequisites
-
-- [Docker](https://docs.docker.com/get-docker/) installed.
-- [Docker Compose](https://docs.docker.com/compose/install/) (included in Docker Desktop).
-
----
-
-## 🧱 Project Structure
-
-### 🔧 Dockerfile
-
-- Uses `eclipse-temurin:17-jdk-alpine` as the base image.
-- Builds and runs a Spring Boot `.jar` with the `prod` profile.
-- Exposes port `8080`.
-
-### 🗂 docker-compose.yml
-
-Defines the following services:
-
-#### ✅ app (aBay RESTFul API)
-
-- **Build**: From the `Dockerfile` in the project root.
-- **Image**: `marioatccosta/abay-restful-api:latest`.
-- **Ports**: Maps `8080:8080` (accessible at `http://localhost:8080`).
-- **Environment**:
-    - `DB_USERNAME`: database user.
-    - `DB_PASSWORD`: database password.
-- **Depends on**: `postgres` service.
-
-#### 🐘 postgres (database)
-
-- **Image**: `postgres:15`.
-- **Ports**: `5432:5432`.
-- **Environment**:
-    - `POSTGRES_DB=ES`
-    - `POSTGRES_USER=postgres`
-    - `POSTGRES_PASSWORD=pires`
-- **Volume**: Persists data in `pgdata`.
-
-#### 💾 Volumes
-
-```yaml
-volumes:
-  pgdata:
-```
+1. 🔨 Build the project
+2. ✅ Run unit and integration tests
+3. 🐳 Build the Docker image
+4. 🚀 Push the Docker image to [Docker Hub](https://hub.docker.com/r/marioatccosta/abay-restful-api)
+5. 📦 Deploy the image via SSH to `HOST_MACHINE` using Docker Compose
 
 ---
 
-## ▶️ How to Run
+## 🔧 CI/CD Pipeline Implementation
 
-1. **Clone the repository**:
+The CI/CD pipeline is split into two workflows:
+
+### ✅ [`builder.yml`](.github/workflows/builder.yml)
+
+Triggered on every push to `main`. It performs:
+
+- Project checkout
+- Java 17 setup
+- Maven build (`mvn package`)
+- Test execution (`mvn test`)
+- Docker image build (`docker build`)
+- Docker image push to Docker Hub
+
+Secrets used:
+- `DOCKER_USERNAME`
+- `DOCKER_PASSWORD`
+
+Docker image: [`marioatccosta/abay-restful-api:latest`](https://hub.docker.com/r/marioatccosta/abay-restful-api)
+
+---
+
+### 🚀 [`deployer.yml`](.github/workflows/deploy.yml)
+
+Triggered automatically when the `builder` workflow completes successfully. It performs:
+
+- Copies `docker-compose.yml` to the remote server via `scp`
+- Connects to `HOST_MACHINE` via `ssh`
+- Pulls the latest Docker image
+- Executes `docker compose up -d` on the server
+
+Secrets used:
+- `SSH_HOST`
+- `SSH_PORT`
+- `SSH_USER_DEV1` / `SSH_KEY_DEV1` (and optionally for other users)
+
+The SSH credentials are selected dynamically based on the commit author.
+
+---
+
+## 📦 Docker & Docker Compose
+
+### 🗂 `Dockerfile`
+
+- Based on `eclipse-temurin:17-jdk-alpine`
+- Builds the `.jar` with Maven
+- Runs the Spring Boot app with `prod` profile
+- Exposes port `8080`
+
+### 🧱 `docker-compose.yml`
+
+Includes two services:
+
+- **app**: the Spring Boot REST API (`marioatccosta/abay-restful-api:latest`)
+- **postgres**: PostgreSQL 15 with persistent volume
+
+### ▶️ How to Run Locally
+
+1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/aBay-RESTFul-API.git
+git clone https://github.com/mariocosta-pt/aBay-RESTFul-API.git
 cd aBay-RESTFul-API
 ```
 
-2. **Build the .jar** (outside the container):
+2. Build the application
 
 ```bash
-./mvnw clean package -DskipTests
+mvn clean package -DskipTests
 ```
 
-3. **Start the application with Docker Compose**:
-
+3. Start the app and DB using Docker 
 ```bash
-docker-compose up --build
+docker compose up --build 
 ```
 
-4. **Access the API at**: [http://localhost:8080](http://localhost:8080)
+4. Access the API at http://localhost:8080
 
----
+### 🧪 How to Run Tests
 
-## 🧪 Testing
-
-Run tests with:
-
-```bash
-./mvnw test
+```
+mvn test
 ```
 
----
+### ⚙️ Configuration & Parametrization
 
-## 🔐 Security Notes
+Critical settings are fully parameterized:
+- All database credentials are configured via environment variables.
 
-- Environment variables like `DB_USERNAME` and `DB_PASSWORD` can be stored in a `.env` file (excluded from version control).
-- Avoid hardcoding sensitive credentials in `docker-compose.yml` for production.
+- Docker image and tag are defined in the builder.yml via ${{ secrets.DOCKER_USERNAME }}/image:latest
 
----
+- SSH credentials and targets are fully externalized using GitHub secrets
+
+- The deployer.yml dynamically selects the SSH user and password based on the push author.
+
+### 🌐 Links
+
+- 🧪 GitHub Repo: https://github.com/mariocosta-pt/aBay-RESTFul-API
+- 🐳 Docker Hub: https://hub.docker.com/r/marioatccosta/abay-restful-api
+
+### 📌 Decisions Made
+
+CI and CD were split into separate workflows (builder and deployer) for modularity and visibility
+Used appleboy/ssh-action and scp-action to deploy and transfer files securely
+Chose Docker Compose for orchestration on the server to simplify future service expansion (e.g., Redis, Nginx, etc.)
+Secrets management entirely handled via GitHub Actions Secrets interface.
+
+### 🙋 Author
+
+- Mário Costa - m61727 - github.com/mariocosta-pt
+- Gonçalo Pires - 
+- Miguel M -
