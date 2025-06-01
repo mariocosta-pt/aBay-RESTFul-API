@@ -13,6 +13,10 @@ jobs:
     environment: Deploy
 
     steps:
+
+      - name: Verificar ficheiros disponíveis na raiz
+        run: ls -la
+
       - name: Copiar docker-compose para o servidor
         uses: appleboy/scp-action@v1
         with:
