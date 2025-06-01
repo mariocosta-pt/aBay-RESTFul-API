@@ -1,48 +1,47 @@
-name: Deploy
+name: Remote Deploy
 
 on:
-  push:
-    branches:
-      - main
-
-env:
-  DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/myapp:latest
-
+  workflow_run:
+    workflows: ["Builder"] #Nome do builder.yml
+    types:
+      - completed #Caso complete
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    environment: Deploy
-
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - name: Definir user e chave com base no auto
+        id: setvars
+        run: |
+          AUTHOR="${{ github.event.workflow_run.head_commit.author.email }}"
+          echo "Autor do push: $AUTHOR"
 
-      - name: Make scripts executable
-        run: chmod +x ci/*.sh
+          if [[ "$AUTHOR" == "marioatccosta@gmail.com" ]]; then
+            echo "ssh_user=${{ secrets.SSH_USER_DEV1 }}" >> $GITHUB_OUTPUT
+            echo "ssh_key=${{ secrets.SSH_KEY_DEV1 }}" >> $GITHUB_OUTPUT
+          elif [[ "$AUTHOR" == "dev2@example.com" ]]; then
+            echo "ssh_user=${{ secrets.SSH_USER_DEV2 }}" >> $GITHUB_OUTPUT
+            echo "ssh_key=${{ secrets.SSH_KEY_DEV2 }}" >> $GITHUB_OUTPUT
+          elif [[ "$AUTHOR" == "dev3@example.com" ]]; then
+            echo "ssh_user=${{ secrets.SSH_USER_DEV3 }}" >> $GITHUB_OUTPUT
+            echo "ssh_key=${{ secrets.SSH_KEY_DEV3 }}" >> $GITHUB_OUTPUT
+          else
+            echo "Autor desconhecido. Falhando deploy."
+            exit 1
+          fi
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: SSH e deploy remoto
+        uses: appleboy/ssh-action
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
-
-      - name: Build with Maven
-        run: mvn -B clean package -DskipTests
-
-      - name: Run tests
-        run: mvn -B test
-
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build Docker image
-        run: docker build -t $DOCKER_IMAGE .
-
-      - name: Push Docker image
-        run: docker push $DOCKER_IMAGE
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ steps.setvars.outputs.ssh_user }}
+          key: ${{ steps.setvars.outputs.ssh_key }}
+          port: 22
+          script: |
+            echo "Deploy feito por ${{ steps.setvars.outputs.ssh_user }}"
+            docker pull ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+            docker stop myapp || true
+            docker rm myapp || true
+            docker run -d --name myapp -p 8080:8080 teu-usuario/myapp:latest

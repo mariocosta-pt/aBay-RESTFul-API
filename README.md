@@ -2,6 +2,8 @@
 
 A RESTful API for an online market platform.
 
+![builder](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+
 ---
 
 ## 🐳 Running with Docker Compose
