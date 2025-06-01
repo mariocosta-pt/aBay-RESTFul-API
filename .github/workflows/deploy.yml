@@ -13,6 +13,8 @@ jobs:
     environment: Deploy
 
     steps:
+      - name: Checkout repo
+      - uses: actions/checkout@v4
 
       - name: Verificar ficheiros disponíveis na raiz
         run: ls -la
