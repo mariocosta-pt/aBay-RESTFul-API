@@ -2,7 +2,7 @@
 
 A RESTful API for an online market platform.
 
-![builder](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+![Builder](https://github.com/MarioCosta/my-awesome-app/actions/workflows/builder.yml/badge.svg?branch=main)
 
 ---
 
