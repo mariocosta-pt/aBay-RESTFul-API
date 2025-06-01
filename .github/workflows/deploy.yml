@@ -5,9 +5,14 @@ on:
     branches:
       - main
 
+env:
+  DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: Deploy
 
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -15,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Make scripts executable
         run: chmod +x ci/*.sh
@@ -27,14 +32,17 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build app
-        run: ./ci/01-build.sh
+      - name: Build with Maven
+        run: mvn -B -q clean package -DskipTests
 
       - name: Run tests
-        run: ./ci/02-test.sh
+        run: mvn -B -q test
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker image
-        run: ./ci/03-build-image.sh
+        run: docker build -t $DOCKER_IMAGE .
 
       - name: Push Docker image
-        run: ./ci/04-push-image.sh
+        run: docker push $DOCKER_IMAGE
