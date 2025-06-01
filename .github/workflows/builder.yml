@@ -12,7 +12,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: Builder
+    environment: Deploy
 
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
