@@ -19,6 +19,10 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
       - name: Checkout repo
         uses: actions/checkout@v4
 
