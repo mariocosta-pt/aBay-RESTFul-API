@@ -133,4 +133,4 @@ Secrets management entirely handled via GitHub Actions Secrets interface.
 
 - Mário Costa - m61727 - github.com/mariocosta-pt
 - Gonçalo Pires - m60716 - github.com/GoncaloPires19 
-- Miguel M - 
+- Miguel Moreira - m61617 - github.com/m61617
