@@ -33,15 +33,14 @@ jobs:
             exit 1
           fi
 
-      - name: Debug Before SSH
-        run: |
-          echo "${{ steps.setvars.outputs.ssh_user }} ${{ steps.setvars.outputs.ssh_key }}"
-
       - name: SSH e deploy remoto
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ steps.setvars.outputs.ssh_user }}
-          key: ${{ steps.setvars.outputs.ssh_key }}
+          password: ${{ steps.setvars.outputs.ssh_key }}
           port: ${{ secrets.SSH_PORT }}
-          script: whoami
+          script: |
+            whoami
+            echo "ssh_user=${{ secrets.SSH_USER_DEV1 }}" >> $GITHUB_OUTPUT
+            echo "ssh_pass=${{ secrets.SSH_PASS_DEV1 }}" >> $GITHUB_OUTPUT
