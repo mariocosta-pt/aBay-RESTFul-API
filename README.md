@@ -2,7 +2,8 @@
 
 A RESTful API for an online market platform.
 
-![Builder](https://github.com/MarioCosta/my-awesome-app/actions/workflows/builder.yml/badge.svg?branch=main)
+![Builder](https://github.com/mariocosta-pt/aBay-RESTFul-API/actions/workflows/builder.yml/badge.svg)
+![Deployer](https://github.com/mariocosta-pt/aBay-RESTFul-API/actions/workflows/deployer.yml/badge.svg)
 
 ---
 
