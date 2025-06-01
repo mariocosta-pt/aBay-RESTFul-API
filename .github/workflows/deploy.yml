@@ -1,4 +1,4 @@
-name: Remote Deploy
+name: Deployer
 
 on:
   workflow_run:
