@@ -132,5 +132,5 @@ Secrets management entirely handled via GitHub Actions Secrets interface.
 ### 🙋 Author
 
 - Mário Costa - m61727 - github.com/mariocosta-pt
-- Gonçalo Pires - 
+- Gonçalo Pires - m60716 - github.com/GoncaloPires19 
 - Miguel M - 
