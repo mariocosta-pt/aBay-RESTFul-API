@@ -33,7 +33,7 @@ jobs:
           fi
 
       - name: SSH e deploy remoto
-        uses: appleboy/ssh-action
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ steps.setvars.outputs.ssh_user }}
