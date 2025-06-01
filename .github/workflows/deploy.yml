@@ -13,32 +13,12 @@ jobs:
     environment: Deploy
 
     steps:
-      - name: Definir user e chave com base no auto
-        id: setvars
-        run: |
-          AUTHOR="${{ github.event.workflow_run.head_commit.author.email }}"
-          echo "Autor do push: $AUTHOR"
-
-          if [[ "$AUTHOR" == "marioatccosta@gmail.com" ]]; then
-            echo "ssh_user=${{ secrets.SSH_USER_DEV1 }}" >> $GITHUB_OUTPUT
-            echo "ssh_key=${{ secrets.SSH_KEY_DEV1 }}" >> $GITHUB_OUTPUT
-          elif [[ "$AUTHOR" == "dev2@example.com" ]]; then
-            echo "ssh_user=${{ secrets.SSH_USER_DEV2 }}" >> $GITHUB_OUTPUT
-            echo "ssh_key=${{ secrets.SSH_KEY_DEV2 }}" >> $GITHUB_OUTPUT
-          elif [[ "$AUTHOR" == "dev3@example.com" ]]; then
-            echo "ssh_user=${{ secrets.SSH_USER_DEV3 }}" >> $GITHUB_OUTPUT
-            echo "ssh_key=${{ secrets.SSH_KEY_DEV3 }}" >> $GITHUB_OUTPUT
-          else
-            echo "Autor desconhecido. Falhando deploy."
-            exit 1
-          fi
-
       - name: Copiar docker-compose para o servidor
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ steps.setvars.outputs.ssh_user }}
-          password: ${{ steps.setvars.outputs.ssh_pass }}
+          username: ${{ secrets.SSH_USER_DEV1 }}
+          password: ${{ secrets.SSH_KEY_DEV1 }}
           port: ${{ secrets.SSH_PORT }}
           source: "docker-compose.yml"
           target: "abay-api-app"
@@ -47,12 +27,12 @@ jobs:
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ steps.setvars.outputs.ssh_user }}
-          password: ${{ steps.setvars.outputs.ssh_pass }}
+          username: ${{ secrets.SSH_USER_DEV1 }}
+          password: ${{ secrets.SSH_KEY_DEV1 }}
           port: ${{ secrets.SSH_PORT }}
           script: |
             whoami
-            echo "Deploy feito com sucesso por ${{ steps.setvars.outputs.ssh_user }}"
+            echo "Deploy feito com sucesso por ${{ github.event.workflow_run.head_commit.author.email }}"
             cd abay-api-app
             docker compose pull
             docker compose down
