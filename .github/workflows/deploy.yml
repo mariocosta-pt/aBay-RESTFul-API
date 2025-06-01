@@ -34,14 +34,14 @@ jobs:
           fi
 
       - name: Copiar docker-compose para o servidor
-        uses: appleboy/scp-action@v1.0.0
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ steps.setvars.outputs.ssh_user }}
           password: ${{ steps.setvars.outputs.ssh_pass }}
           port: ${{ secrets.SSH_PORT }}
           source: "docker-compose.yml"
-          target: "/abay-api-app"
+          target: "abay-api-app"
 
       - name: SSH e Pull
         uses: appleboy/ssh-action@v1.0.0
