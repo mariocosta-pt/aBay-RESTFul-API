@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+  DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/abay-restful-api:latest
 
 
 jobs:
