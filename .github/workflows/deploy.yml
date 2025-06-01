@@ -33,14 +33,27 @@ jobs:
             exit 1
           fi
 
-      - name: SSH e deploy remoto
+      - name: Copiar docker-compose para o servidor
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ steps.setvars.outputs.ssh_user }}
+          password: ${{ steps.setvars.outputs.ssh_pass }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "docker-compose.yml"
+          target: "/abay-api-app"
+
+      - name: SSH e Pull
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ steps.setvars.outputs.ssh_user }}
-          password: ${{ steps.setvars.outputs.ssh_key }}
+          password: ${{ steps.setvars.outputs.ssh_pass }}
           port: ${{ secrets.SSH_PORT }}
           script: |
             whoami
-            echo "ssh_user=${{ secrets.SSH_USER_DEV1 }}" >> $GITHUB_OUTPUT
-            echo "ssh_pass=${{ secrets.SSH_PASS_DEV1 }}" >> $GITHUB_OUTPUT
+            echo "Deploy feito com sucesso por ${{ steps.setvars.outputs.ssh_user }}"
+            cd abay-api-app
+            docker compose pull
+            docker compose down
+            docker compose up -d --remove-orphans
